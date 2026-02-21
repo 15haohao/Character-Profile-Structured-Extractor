@@ -1,0 +1,5 @@
+{
+  "name": "人物志结构化提取器",
+  "description": "专业级文档结构化工具，专门用于从超长Word文档中识别、提取并将将领简介转换为结构化CSV格式。支持智能分段、流控处理与批量导出。",
+  "requestFramePermissions": []
+}
