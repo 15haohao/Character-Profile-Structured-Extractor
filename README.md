@@ -1,20 +1,138 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 人物志结构化提取器
 
-# Run and deploy your AI Studio app
+一个面向“历史人物志”“将领简介”等长篇资料的结构化抽取工具。  
+本工具基于大模型接口，将非结构化的 Word 文档自动转换为结构化 CSV 数据，可直接用于 Excel、数据库或后续数据分析。
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/0742205a-5f61-425e-9df7-f7fe3fda2828
+## 功能特性
 
-## Run Locally
+### 长文档分段处理
+自动将超长文档切分为可控长度的文本块，分批调用模型处理，避免上下文超限或单次请求失败。
 
-**Prerequisites:**  Node.js
+### 自定义结构化字段
+支持用户自定义提取字段（如：出生地、军衔、官职、毕业院校等），不限于“姓名 + 简介”。
 
+### 示例驱动抽取（Few-shot）
+支持加载示例模板，通过示例约束输出格式，提高抽取准确率与稳定性。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+## 使用前准备
+
+### 文件格式要求
+本工具仅支持导入 `.docx` 格式的 Word 文件。
+
+如果你的原始资料是 PDF，请先转换为 Word（.docx）后再导入：
+
+- **文本型 PDF**：可直接转换为 Word。
+- **扫描版 PDF（纯图片）**：需要先 OCR 文字识别，再转换为 Word。
+
+推荐在线工具：https://doc2x.noedgeai.com/
+
+请确保最终导入的 `.docx` 文件为可编辑文本，否则工具无法正确解析内容。
+
+---
+
+## 获取 API Key
+
+本工具调用硅基流动（SiliconFlow）提供的大模型接口，需要用户自行提供 API Key。
+
+### 操作步骤
+1. 打开硅基流动官网：https://siliconflow.cn/
+2. 注册并登录账号
+3. 在左侧菜单找到「API 密钥」（API Key）
+4. 点击「创建新 API 密钥」
+5. 复制生成的 `sk-` 开头字符串并妥善保存
+
+> 注意：请勿公开或提交你的 API Key（例如提交到 GitHub 仓库）。
+
+---
+
+## 本地运行
+
+本项目为前端工程，需要 Node.js 环境。
+
+### 1. 安装 Node.js
+1. 访问 Node.js 官网：https://nodejs.org/
+2. 下载标注为 **LTS** 的版本并安装
+
+安装完成后可在终端中验证：
+
+```bash
+node -v
+npm -v
+```
+
+### 2. 安装依赖并启动
+
+在项目根目录执行：
+
+```bash
+npm install
+npm run dev
+```
+
+启动成功后，终端会输出类似：
+
+```text
+http://localhost:3000
+```
+
+在浏览器中打开该地址即可使用。
+
+---
+
+## 使用流程
+
+### 1. 填写配置
+- **API Key**：粘贴 `sk-` 开头的密钥
+- **模型选择**：默认已配置，可按成本/速度需求自行调整
+
+### 2. 导入文档
+- 点击上传区域选择 `.docx` 文件
+- 系统会自动读取文本并分段
+- 右侧日志会显示识别到的文本块数量
+
+### 3. 设置结构化字段
+在「结构化提取字段」中添加你希望抽取的字段，例如：
+
+- 出生地
+- 军衔
+- 官职
+- 毕业院校
+
+模型将针对这些字段进行抽取。
+
+### 4. 示例模板（可选）
+在「微调示例模板」中：
+
+- 点击「加载默认示例」
+- 查看并按需要修改示例
+
+示例可用于约束输出格式，提高结果一致性。
+
+### 5. 开始提取与导出
+- 点击「开始提取」
+- 等待处理完成
+- 点击「导出结果」下载 CSV
+
+---
+
+## 常见问题
+
+### Excel 打开 CSV 乱码
+可先用“记事本”打开 CSV，然后“另存为”，编码选择 **UTF-8 with BOM**。
+
+### 费用说明
+硅基流动 API 按 token 计费，成本较低；免费额度用尽后可小额充值继续使用。
+
+### 速度优化
+可在设置中适当提高“段落上限”，但过高可能导致上下文超限或抽取不稳定。
+
+---
+
+## 安全说明
+
+- API Key 由用户本地输入与保存
+- 请勿将包含 API Key 的文件提交到公开仓库
